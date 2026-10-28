@@ -1,11 +1,11 @@
 import flet as ft
 import models
-
+from models.Cartela import verificarSeCodigoJaCadastrado
 def telaCadastroCartela():
 
     titulo = ft.Container(content=ft.Text("Cadastro Cartela", size=35, weight=ft.FontWeight.BOLD), alignment=ft.Alignment.CENTER)
-
-    codCartelaTextFild = ft.Container(content= ft.TextField(label="Código Cartela", border_color=ft.Colors.WHITE), alignment=ft.Alignment.CENTER_LEFT)
+    campoCodigo = ft.Container(content=ft.TextField(label="Código Cartela", border_color=ft.Colors.WHITE,on_change=verificarSeCodigoJaCadastrado), alignment=ft.Alignment.CENTER_LEFT)
+    codCartelaTextFild = ft.Container(content=campoCodigo, alignment=ft.Alignment.CENTER_LEFT)
 
     letraB = ft.Container(content=ft.Text("B", size=25, weight=ft.FontWeight.BOLD), align=ft.Alignment.CENTER)
     letraI = ft.Container(content=ft.Text("I", size=25, weight=ft.FontWeight.BOLD), align=ft.Alignment.CENTER)

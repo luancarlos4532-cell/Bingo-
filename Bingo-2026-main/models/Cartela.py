@@ -85,11 +85,21 @@ def verificaEAlertaSeTemCamposVazios(listaColunas):
         return possuiVazios
 
 # Função do pacote
+def limparCamposCartela(listaColunas,campoCodigo, textoMensagem):
+    campoCodigo.content.value = ""
+    campoCodigo.label = "Código Cartela"
+    campoCodigo.border_color = ft.Colors.WHITE
+    for coluna in listaColunas:
+        for item in coluna.controls:
+            if(isinstance(item, ft.TextField)):
+                item.value = ""
+                item.label = item.data
+                item.border_color = ft.Colors.WHITE
 def cadastrarCartela(e: ft.Event[ft.Button]):
     listaColunas = e.control.data[0]
-    codigo = e.control.data[1].content.value
+    codigo = e.control.data[1].content.content.value
     codigoValido = codigo != ""
-    codigoduplicado = codigo == codigo or codigoValido == codigoValido
+    codigoduplicado = (codigoValido and models.bancoDados.encontrar_cartela(int(codigo)) != None)
     textoMensagem = e.control.data[2]
 
     listaB = []
@@ -123,7 +133,7 @@ def cadastrarCartela(e: ft.Event[ft.Button]):
     if(not codigoValido):
         e.control.data[1].content.border_color = ft.Colors.YELLOW
         e.control.data[1].content.label = "Não pode ficar vazio"
-    if(codigoduplicado):
+    elif codigoduplicado:
         e.control.data[1].content.border_color = ft.Colors.RED
         e.control.data[1].content.label = "Código já cadastrado"
 
@@ -132,11 +142,13 @@ def cadastrarCartela(e: ft.Event[ft.Button]):
         e.control.data[1].content.label = ""
 
     #criar Verificação se o código ja esta cadastrado
+
     if(contadorCorretos == 24 and codigoValido and not possuiValoresDuplicados and not possuiCamposVazios and not codigoduplicado):
         models.bancoDados.adicionarCartela(codigo,listaB,listaI,listaN,listaG,listaO)
         textoMensagem.color = ft.Colors.GREEN
-        textoMensagem.value = f"Cartela {codigo} cadastrado com suscesso"
+        textoMensagem.value = f"Cartela {codigo} cadastrado com sucesso"
         #limpar campos
+        limparCamposCartela(listaColunas,e.control.data[1].content, textoMensagem)
     if(contadorCorretos != 24 or not codigoValido or possuiValoresDuplicados or possuiCamposVazios or codigoduplicado):
         textoMensagem.color = ft.Colors.RED
         textoMensagem.value = f"Erro ao cadastrar a cartela {codigo}"
@@ -144,7 +156,18 @@ def cadastrarCartela(e: ft.Event[ft.Button]):
         textoMensagem.color = ft.Colors.RED
         textoMensagem.value = f"Erro ao cadastrar a cartela {codigo}, código já cadastrado"
     e.page.update()
-
+def verificarSeCodigoJaCadastrado(e: ft.Event[ft.TextField]):
+        codigo = e.control.value.strip()
+        if codigo == "":
+            e.control.border_color = ft.Colors.WHITE
+            e.control.label = "Codigo Cartela"
+        elif models.bancoDados.encontrar_cartela(int(codigo)) != None:
+            e.control.border_color = ft.Colors.RED
+            e.control.label = "Código já cadastrado"
+        else:
+            e.control.border_color = ft.Colors.GREEN
+            e.control.label = "Codigo disponível"
+        e.page.update()
 def pegarListaCartelas():
     return models.bancoDados.pegarListaCartelas()
 

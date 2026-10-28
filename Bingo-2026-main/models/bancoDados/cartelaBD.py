@@ -34,6 +34,10 @@ def encontrar_cartela(codigo):
 
     return None
 
+    for item in listaCartelas:
+        if item["codigo"] == codigo:
+            return True
+    return False
 def pegarListaCartelas():
     return listaCartelas
 
