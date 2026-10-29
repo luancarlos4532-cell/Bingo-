@@ -26,11 +26,9 @@ listaCartelas = [
 ]
 
 def encontrar_cartela(codigo):
-    indice = 0
-    for item in listaCartelas:
-        if item["codigo"] == codigo:
+    for indice, item in enumerate(listaCartelas):
+        if str(item["codigo"]) == str(codigo).strip():
             return indice
-        indice += 1
 
     return None
 
